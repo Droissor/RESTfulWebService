@@ -1,7 +1,9 @@
 package com.droissor.app.ws.controller
 
-import com.droissor.app.ws.request.UserRequest
-import com.droissor.app.ws.response.UserResponse
+import com.droissor.app.ws.entity.User
+import com.droissor.app.ws.request.UserCreateRequest
+import com.droissor.app.ws.request.UserUpdateRequest
+import com.droissor.app.ws.service.UserService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -17,8 +19,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("users")
-class UserController {
-
+class UserController(val userService: UserService) {
 
     @GetMapping
     fun getUsers(
@@ -28,27 +29,27 @@ class UserController {
     ) = "get users was called for page=$page, limit=$limit, sort=$sort"
 
     @GetMapping(path = ["/{userId}"], produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE])
-    fun getUser(@PathVariable userId: String): ResponseEntity<UserResponse> =
-            ResponseEntity.ok(UserResponse(userId = 1, name = "userName", email = "user@email.com", password = "1234"))
+    fun getUser(@PathVariable userId: String): ResponseEntity<User> =
+            ResponseEntity.ok(userService.findUser(userId))
 
     @PostMapping(
             consumes = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE],
             produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
     )
-    fun createUser(@Valid @RequestBody userRequest: UserRequest): ResponseEntity<UserResponse> {
+    fun createUser(@Valid @RequestBody userUpdateRequest: UserCreateRequest): ResponseEntity<User> =
+            ResponseEntity.ok(userService.createUser(userUpdateRequest))
 
-        return ResponseEntity.ok(UserResponse(
-                userId = userRequest.userId,
-                name = userRequest.name,
-                email = userRequest.email,
-                password = userRequest.password
-        ))
+    @PutMapping(
+            path = ["/{userId}"],
+            consumes = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE],
+            produces = [MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE]
+    )
+    fun updateUser(@PathVariable userId: String, @Valid @RequestBody userUpdateRequest: UserUpdateRequest): ResponseEntity<User> =
+            ResponseEntity.ok(userService.updateUser(userId, userUpdateRequest))
+
+    @DeleteMapping(path = ["/{userId}"])
+    fun deleteUser(@PathVariable userId: String): ResponseEntity<Unit> {
+        userService.remove(userId)
+        return ResponseEntity.noContent().build()
     }
-
-    @PutMapping
-    fun updateUser() = "update user was called"
-
-    @DeleteMapping
-    fun deleteUser() = "delete user was called"
-
 }
