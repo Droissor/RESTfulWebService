@@ -1,7 +1,6 @@
 package com.droissor.app.ws.exception
 
 import com.droissor.app.ws.response.ErrorResponse
-import com.droissor.app.ws.service.UserService
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

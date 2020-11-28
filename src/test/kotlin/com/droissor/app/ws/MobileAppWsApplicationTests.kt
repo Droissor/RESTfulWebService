@@ -9,5 +9,4 @@ class MobileAppWsApplicationTests {
 	@Test
 	fun contextLoads() {
 	}
-
 }

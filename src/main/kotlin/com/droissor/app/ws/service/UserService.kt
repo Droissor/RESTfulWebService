@@ -19,10 +19,10 @@ class UserService {
 
     fun createUser(userCreateRequest: UserCreateRequest): User {
         val user = User(
-                userId = UUID.randomUUID().toString(),
-                name = userCreateRequest.name,
-                email = userCreateRequest.email,
-                password = userCreateRequest.password
+            userId = UUID.randomUUID().toString(),
+            name = userCreateRequest.name,
+            email = userCreateRequest.email,
+            password = userCreateRequest.password
         )
 
         users[user.userId] = user
@@ -43,5 +43,4 @@ class UserService {
     fun remove(userId: String) = if (users.containsKey(userId)) users.remove(userId) else throw UserServiceException(createUserNotFoundMessage(userId))
 
     private fun createUserNotFoundMessage(userId: String) = "User not found for id:$userId"
-
 }
